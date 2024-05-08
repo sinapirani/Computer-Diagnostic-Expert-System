@@ -26,7 +26,7 @@ To get started with the Computer Diagnostic Expert System, follow these steps to
 To run the expert system, execute the following command in your terminal:
 
 ```bash
-python diagnostic_system.py
+python app.py
 ```
 
 Follow the on-screen prompts and answer yes/no questions to receive a diagnosis for the computer issue.
