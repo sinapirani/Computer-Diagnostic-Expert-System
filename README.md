@@ -8,8 +8,6 @@ Welcome to the Computer Diagnostic Expert System, a Python application designed 
 - [Installation](#installation)
 - [Usage](#usage)
 - [How It Works](#how-it-works)
-- [Contributing](#contributing)
-- [License](#license)
 
 ## Installation
 
