@@ -46,20 +46,5 @@ The system initiates by loading initial facts and rules:
 
 Based on responses, the system uses rules to infer problems and suggest troubleshooting steps or solutions.
 
-## Contributing
-
-Interested in contributing? Great! You can contribute in several ways:
-- Submit bugs and feature requests.
-- Review the code and enhancements.
-- Add more diagnostic rules and features.
-
-Feel free to fork the repo and create pull requests.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
 Thank you for exploring the Computer Diagnostic Expert System. For any questions or support, please open an issue on this repository.
-```
+
