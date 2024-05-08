@@ -1,4 +1,4 @@
-```markdown
+
 # Computer Diagnostic Expert System
 
 Welcome to the Computer Diagnostic Expert System, a Python application designed to help diagnose and suggest solutions for common computer issues. This application utilizes the Experta framework, a powerful tool for developing expert systems with rules-based logic in Python.
