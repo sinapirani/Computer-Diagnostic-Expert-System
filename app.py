@@ -75,6 +75,84 @@ class ComputerDiagnostic(KnowledgeEngine):
         print("4. Check for software conflicts or compatibility issues.")
         print("5. If the issue persists, consider reinstalling the operating system or seeking professional help.")
 
+    # Rules for Sound Problems - Mahdi Behoftadeh
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          NOT(Fact(sound_works=W())))
+    def ask_if_sound_works(self):
+        sound_works = yesno_prompt("Does the sound work?")
+        self.declare(Fact(sound_works=sound_works))
+
+    # Rules for Sound Problems - Mahdi Behoftadeh
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          Fact(sound_works=False))
+    def suggest_no_sound(self):
+        print("There seems to be an issue with the sound. Please try the following steps:")
+        print("1. Check if the speakers or headphones are properly connected.")
+        print("2. Ensure that the volume is not muted or turned down too low.")
+        print("3. Update or reinstall your audio drivers.")
+        print("4. Check sound settings in the operating system.")
+        print("5. Try using a different audio device.")
+
+    # Rules for Sound Problems - Mahdi Behoftadeh
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          Fact(sound_works=True),
+          NOT(Fact(sound_intermittent=W())))
+    def ask_if_sound_intermittent(self):
+        sound_intermittent = yesno_prompt("Is the sound intermittent?")
+        self.declare(Fact(sound_intermittent=sound_intermittent))
+
+    # Rules for Sound Problems - Mahdi Behoftadeh
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          Fact(sound_works=True),
+          Fact(sound_intermittent=True))
+    def suggest_intermittent_sound(self):
+        print("There seems to be an intermittent sound issue. Please try the following steps:")
+        print("1. Check if the audio cable is securely connected.")
+        print("2. Ensure that there are no loose connections.")
+        print("3. Update or reinstall your audio drivers.")
+        print("4. Check for interference from other devices.")
+        print("5. Test with another set of speakers or headphones.")
+
+    # Rules for Sound Problems - Mahdi Behoftadeh
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          Fact(sound_works=True),
+          Fact(sound_intermittent=False),
+          NOT(Fact(sound_distorted=W())))
+    def ask_if_sound_distorted(self):
+        sound_distorted = yesno_prompt("Is the sound distorted?")
+        self.declare(Fact(sound_distorted=sound_distorted))
+
+    # Rules for Sound Problems - Mahdi Behoftadeh
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          Fact(sound_works=True),
+          Fact(sound_intermittent=False),
+          Fact(sound_distorted=True))
+    def suggest_distorted_sound(self):
+        print("There seems to be an issue with distorted sound. Please try the following steps:")
+        print("1. Check if the audio cable is properly connected and not damaged.")
+        print("2. Ensure that the audio drivers are up to date.")
+        print("3. Adjust the audio settings in the operating system.")
+        print("4. Test with another set of speakers or headphones.")
+        print("5. Check for any electromagnetic interference from other devices.")
+
 def yesno_prompt(question):
     while True:
         response = input(question + " (yes/no): ").lower()
