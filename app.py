@@ -1,4 +1,4 @@
-from experta import KnowledgeEngine, Fact, NOT, W, AND, OR, Rule, DefFacts, MATCH
+from experta import KnowledgeEngine, Fact, NOT, W, AND, OR, Rule, DefFacts
 
 class ComputerDiagnostic(KnowledgeEngine):
     @DefFacts()
@@ -35,6 +35,29 @@ class ComputerDiagnostic(KnowledgeEngine):
     def ask_if_software_issue(self):
         software_issue = yesno_prompt("Are you experiencing any software-related issues (e.g., program crashes, freezes, errors)?")
         self.declare(Fact(software_issue=software_issue))
+        
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          Fact(software_issue=False),
+          NOT(Fact(is_making_noise=W())))
+    def ask_if_making_noise(self):
+        is_making_noise = yesno_prompt("Is the computer making any unusual noises?")
+        self.declare(Fact(is_making_noise=is_making_noise))
+
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          Fact(software_issue=False),
+          Fact(is_making_noise=True))
+    def suggest_hardware_issue_noise(self):
+        print("The computer is making unusual noises. This could indicate a hardware problem such as a failing hard drive or malfunctioning fan. Please try the following steps:")
+        print("1. Check if any cables or components are loose inside the computer.")
+        print("2. Ensure the fans are clean and not obstructed by dust or debris.")
+        print("3. Listen carefully to identify the source of the noise.")
+        print("4. If the noise persists, consider replacing the noisy component or seeking professional help.")
 
     @Rule(Fact(action='diagnose'),
           Fact(computer_turns_on=True),
