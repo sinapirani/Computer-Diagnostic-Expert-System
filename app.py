@@ -36,6 +36,8 @@ class ComputerDiagnostic(KnowledgeEngine):
         software_issue = yesno_prompt("Are you experiencing any software-related issues (e.g., program crashes, freezes, errors)?")
         self.declare(Fact(software_issue=software_issue))
         
+        
+    # Amirhossein Ramezani
     @Rule(Fact(action='diagnose'),
           Fact(computer_turns_on=True),
           Fact(displays_output=True),
