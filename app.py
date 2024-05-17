@@ -1,4 +1,4 @@
-from experta import KnowledgeEngine, Fact, NOT, W, AND, OR, Rule, DefFacts, MATCH
+from experta import KnowledgeEngine, Fact, NOT, W, AND, OR, Rule, DefFacts
 
 class ComputerDiagnostic(KnowledgeEngine):
     @DefFacts()
@@ -13,6 +13,28 @@ class ComputerDiagnostic(KnowledgeEngine):
         self.declare(Fact(computer_turns_on=computer_turns_on))
 
 
+
+    #Amir Monfared
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          NOT(Fact(internet_connection_issue=W())))
+    def ask_if_internet_connection_issue(self):
+        internet_connection_issue = yesno_prompt("Are you experiencing any issues with your internet connection (e.g., no connectivity, slow speeds)?")
+        self.declare(Fact(internet_connection_issue=internet_connection_issue))
+
+      #FATEMEH RADMARD
+    
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          NOT(Fact(Bluetooth=W())))
+    def ask_if_connects_bluetooth(self):
+        Bluetooth = yesno_prompt("Does the computer connect to Bluetooth?")
+        self.declare(Fact(Bluetooth=Bluetooth))
+    
     @Rule(Fact(action='diagnose'),
           Fact(computer_turns_on=True),
           NOT(Fact(displays_output=W())))
@@ -29,13 +51,23 @@ class ComputerDiagnostic(KnowledgeEngine):
         self.declare(Fact(boots_up=boots_up))
 
     @Rule(Fact(action='diagnose'),
+      Fact(computer_turns_on=True),
+      Fact(displays_output=True),
+      Fact(boots_up=True),
+      NOT(Fact(blue_screen_error=W())))
+    def ask_if_blue_screen_error(self):
+      blue_screen = yesno_prompt("Did you encounter the Blue screen error?")
+      self.declare(Fact(blue_screen_error=blue_screen))
+        
+    @Rule(Fact(action='diagnose'),
           Fact(computer_turns_on=True),
           Fact(displays_output=True),
           Fact(boots_up=True),
-          NOT(Fact(blue_screen_error=W())))
-    def ask_if_blue_screen_error(self):
-        blue_screen = yesno_prompt("Did you encounter the Blue screen error?")
-        self.declare(Fact(blue_screen_error=blue_screen))
+          NOT(Fact(connection=W())))
+    def ask_if_connects(self):
+        connection = yesno_prompt("Does the computer connect to Wi-Fi?")
+        self.declare(Fact(connection=connection))
+
 
     @Rule(Fact(action='diagnose'),
           Fact(computer_turns_on=True),
@@ -101,9 +133,11 @@ class ComputerDiagnostic(KnowledgeEngine):
           Fact(displays_output=True),
           Fact(boots_up=True),
           Fact(blue_screen_error=False),
+          Fact(connection=True),
           NOT(Fact(software_issue=W())))
     def ask_if_software_issue(self):
-        software_issue = yesno_prompt("Are you experiencing any software-related issues (e.g., program crashes, freezes, errors)?")
+        software_issue = yesno_prompt(
+            "Are you experiencing any software-related issues (e.g., program crashes, freezes, errors)?")
         self.declare(Fact(software_issue=software_issue))
 
 
@@ -111,9 +145,11 @@ class ComputerDiagnostic(KnowledgeEngine):
           Fact(computer_turns_on=True),
           Fact(displays_output=True),
           Fact(boots_up=True),
+          Fact(connection=True),
           Fact(software_issue=False))
     def suggest_hardware_issue(self):
-        print("The computer seems to be working fine physically and software-wise. The issue might be hardware-related.")
+        print(
+            "The computer seems to be working fine physically and software-wise. The issue might be hardware-related.")
 
     @Rule(Fact(action='diagnose'),
           Fact(computer_turns_on=False))
@@ -133,13 +169,28 @@ class ComputerDiagnostic(KnowledgeEngine):
           Fact(displays_output=True),
           Fact(boots_up=False))
     def suggest_boot_issue(self):
-        print("The computer might have a boot issue. Please check if the boot device (e.g., hard drive, SSD) is properly connected and functioning.")
+        print(
+            "The computer might have a boot issue. Please check if the boot device (e.g., hard drive, "
+            "SSD) is properly connected and functioning.")
 
 
     @Rule(Fact(action='diagnose'),
           Fact(computer_turns_on=True),
           Fact(displays_output=True),
           Fact(boots_up=True),
+          Fact(connection=False))
+    def ask_if_connects_suggest(self):
+        print("Please try the following steps:")
+        print("1. Go to Control Panel")
+        print("2. Go to Network and Sharing center")
+        print("3. Go to Change adapter settings")
+        print("4. Disable the Wi-Fi and then Enable again")
+
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          Fact(connection=True),
           Fact(software_issue=True))
     def suggest_software_troubleshooting(self):
         print("The issue might be software-related. Please try the following steps:")
@@ -148,6 +199,266 @@ class ComputerDiagnostic(KnowledgeEngine):
         print("3. Scan for viruses and malware.")
         print("4. Check for software conflicts or compatibility issues.")
         print("5. If the issue persists, consider reinstalling the operating system or seeking professional help.")
+        
+    # Amirhossein Ramezani Shahrestani
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          Fact(software_issue=False),
+          Fact(is_making_noise=False),
+          NOT(Fact(keyboard_issue=W())))
+    def ask_if_keyboard_issue(self):
+        keyboard_issue = yesno_prompt("Are you experiencing any issues with the keyboard?")
+        self.declare(Fact(keyboard_issue=keyboard_issue))
+
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          Fact(software_issue=False),
+          Fact(keyboard_issue=True))
+    def suggest_keyboard_troubleshooting(self):
+        print("The issue might be keyboard-related. Please try the following steps:")
+        print("1. Check if the keyboard is properly connected.")
+        print("2. Try using a different keyboard to see if the issue persists.")
+        print("3. Update or reinstall the keyboard drivers.")
+        print("4. Check for any software settings that might affect the keyboard functionality.")
+        print("5. If the issue persists, consider replacing the keyboard or seeking professional help.")
+
+        
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          Fact(software_issue=False),
+          NOT(Fact(is_making_noise=W())))
+    def ask_if_making_noise(self):
+        is_making_noise = yesno_prompt("Is the computer making any unusual noises?")
+        self.declare(Fact(is_making_noise=is_making_noise))
+
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          Fact(software_issue=False),
+          Fact(is_making_noise=True))
+    def suggest_hardware_issue_noise(self):
+        print("The computer is making unusual noises. This could indicate a hardware problem such as a failing hard drive or malfunctioning fan. Please try the following steps:")
+        print("1. Check if any cables or components are loose inside the computer.")
+        print("2. Ensure the fans are clean and not obstructed by dust or debris.")
+        print("3. Listen carefully to identify the source of the noise.")
+        print("4. If the noise persists, consider replacing the noisy component or seeking professional help.")
+
+
+    # Rules for Sound Problems - Mahdi Behoftadeh
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          NOT(Fact(sound_works=W())))
+    def ask_if_sound_works(self):
+        sound_works = yesno_prompt("Does the sound work?")
+        self.declare(Fact(sound_works=sound_works))
+
+    # Rules for Sound Problems - Mahdi Behoftadeh
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          Fact(sound_works=False))
+    def suggest_no_sound(self):
+        print("There seems to be an issue with the sound. Please try the following steps:")
+        print("1. Check if the speakers or headphones are properly connected.")
+        print("2. Ensure that the volume is not muted or turned down too low.")
+        print("3. Update or reinstall your audio drivers.")
+        print("4. Check sound settings in the operating system.")
+        print("5. Try using a different audio device.")
+
+    # Rules for Sound Problems - Mahdi Behoftadeh
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          Fact(sound_works=True),
+          NOT(Fact(sound_intermittent=W())))
+    def ask_if_sound_intermittent(self):
+        sound_intermittent = yesno_prompt("Is the sound intermittent?")
+        self.declare(Fact(sound_intermittent=sound_intermittent))
+
+    # Rules for Sound Problems - Mahdi Behoftadeh
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          Fact(sound_works=True),
+          Fact(sound_intermittent=True))
+    def suggest_intermittent_sound(self):
+        print("There seems to be an intermittent sound issue. Please try the following steps:")
+        print("1. Check if the audio cable is securely connected.")
+        print("2. Ensure that there are no loose connections.")
+        print("3. Update or reinstall your audio drivers.")
+        print("4. Check for interference from other devices.")
+        print("5. Test with another set of speakers or headphones.")
+
+    # Rules for Sound Problems - Mahdi Behoftadeh
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          Fact(sound_works=True),
+          Fact(sound_intermittent=False),
+          NOT(Fact(sound_distorted=W())))
+    def ask_if_sound_distorted(self):
+        sound_distorted = yesno_prompt("Is the sound distorted?")
+        self.declare(Fact(sound_distorted=sound_distorted))
+
+    # Rules for Sound Problems - Mahdi Behoftadeh
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          Fact(sound_works=True),
+          Fact(sound_intermittent=False),
+          Fact(sound_distorted=True))
+    def suggest_distorted_sound(self):
+        print("There seems to be an issue with distorted sound. Please try the following steps:")
+        print("1. Check if the audio cable is properly connected and not damaged.")
+        print("2. Ensure that the audio drivers are up to date.")
+        print("3. Adjust the audio settings in the operating system.")
+        print("4. Test with another set of speakers or headphones.")
+        print("5. Check for any electromagnetic interference from other devices.")
+
+
+    #Fatemeh Moradi
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          Fact(Bluetooth=False))
+    def suggest_to_connect_Bluetooth(self):
+        print("There may be a problem with your Bluetooth driver installation, check it out.")
+
+
+#Mustafa Rahnamai
+# New rule for checking hardware conflicts
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          NOT(Fact(hardware_conflict=W())))
+    def ask_if_hardware_conflict(self):
+        hardware_conflict = yesno_prompt("Are there any hardware conflicts in the device manager?")
+        self.declare(Fact(hardware_conflict=hardware_conflict))
+
+    # New rule for suggesting resolution for hardware conflicts
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          Fact(hardware_conflict=True))
+    def suggest_hardware_conflict_resolution(self):
+        print("There might be a hardware conflict. Please try the following steps:")
+        print("1. Open the device manager and check for any devices with a yellow exclamation mark.")
+        print("2. Try updating the drivers for the conflicting hardware.")
+        print("3. If the issue persists, consider removing the device and restarting the computer.")
+
+    # New rule for checking peripheral issues
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          NOT(Fact(peripheral_issue=W())))
+    def ask_if_peripheral_issue(self):
+        peripheral_issue = yesno_prompt("Are you experiencing issues with any external devices (e.g., keyboard, mouse, printer)?")
+        self.declare(Fact(peripheral_issue=peripheral_issue))
+
+    # New rule for suggesting resolution for peripheral issues
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          Fact(peripheral_issue=True))
+    def suggest_peripheral_issue_resolution(self):
+        print("There might be a peripheral issue. Please try the following steps:")
+        print("1. Check the connections of your external devices.")
+        print("2. Try unplugging and replugging the devices.")
+        print("3. Update the drivers for the external devices.")
+        print("4. Try using the devices on another computer to rule out hardware failure.")
+
+    # New rule for checking system updates
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          NOT(Fact(system_update=W())))
+    def ask_if_system_update(self):
+        system_update = yesno_prompt("Is your operating system and all software up to date?")
+        self.declare(Fact(system_update=system_update))
+
+    # New rule for suggesting system update
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          Fact(system_update=False))
+    def suggest_system_update(self):
+        print("Your system might be out of date. Please ensure that you have the latest updates installed for your operating system and software.")
+
+    #Rules for random crash ,zahra_azadeh
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          Fact(dropout=W()))
+    def ask_if_dropout(self):
+        dropout = yesno_prompt("Does the image suddenly disappear?")
+        self.declare(Fact(dropout=dropout))
+    
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          Fact(dropout=True))
+    def suggest_random_crash(self):
+        print("There seems to be a random crash issue. Please try the following steps:")
+        print("1. Ensure that all hardware components are properly seated and not loose.")
+        print("2. Update device drivers and operating system.")
+        print("3. Check for malware and viruses.")
+        print("4. Monitor system temperature for overheating issues.")
+
+    #Seyed Mahdi Ashrafipour
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=False),
+          Fact(boots_up=False))
+    def suggest_graphics_card_issue(self):
+        print("The computer may have a graphics card issue. Please check the graphics card connections and try again.")
+    
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=False),
+          Fact(software_issue=False))
+    def suggest_os_corruption_issue(self):
+        print("The operating system might be corrupted. Please consider repairing or reinstalling the operating system.")
+
+
+    #Ariyan
+    @Rule(Fact(action='diagnose'),
+      Fact(computer_turns_on=True),
+      Fact(displays_output=False))
+    def suggest_display_issue(self):
+    print("The computer may have a display issue. Please check the monitor connections and the graphics card.")
+    
+    @Rule(Fact(action='diagnose'),
+      Fact(computer_turns_on=True),
+      Fact(displays_output=True),
+      Fact(boots_up=False),
+      Fact(software_issue=False),
+      Fact(hardware_issue=False))
+    def suggest_power_supply_issue(self):
+    print("The power supply might be faulty. Please check the power connections and consider replacing the power supply.")
 
 
 def yesno_prompt(question):
@@ -159,6 +470,7 @@ def yesno_prompt(question):
             return False
         else:
             print("Please enter 'yes' or 'no'.")
+
 
 engine = ComputerDiagnostic()
 engine.reset()
