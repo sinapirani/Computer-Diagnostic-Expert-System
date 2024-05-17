@@ -449,7 +449,7 @@ class ComputerDiagnostic(KnowledgeEngine):
       Fact(computer_turns_on=True),
       Fact(displays_output=False))
     def suggest_display_issue(self):
-    print("The computer may have a display issue. Please check the monitor connections and the graphics card.")
+        print("The computer may have a display issue. Please check the monitor connections and the graphics card.")
     
     @Rule(Fact(action='diagnose'),
       Fact(computer_turns_on=True),
@@ -458,7 +458,7 @@ class ComputerDiagnostic(KnowledgeEngine):
       Fact(software_issue=False),
       Fact(hardware_issue=False))
     def suggest_power_supply_issue(self):
-    print("The power supply might be faulty. Please check the power connections and consider replacing the power supply.")
+        print("The power supply might be faulty. Please check the power connections and consider replacing the power supply.")
 
 
 def yesno_prompt(question):
