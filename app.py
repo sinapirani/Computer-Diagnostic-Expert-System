@@ -12,6 +12,29 @@ class ComputerDiagnostic(KnowledgeEngine):
         computer_turns_on = yesno_prompt("Does the computer turn on?")
         self.declare(Fact(computer_turns_on=computer_turns_on))
 
+
+    #Amir Monfared
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          NOT(Fact(internet_connection_issue=W())))
+    def ask_if_internet_connection_issue(self):
+        internet_connection_issue = yesno_prompt("Are you experiencing any issues with your internet connection (e.g., no connectivity, slow speeds)?")
+        self.declare(Fact(internet_connection_issue=internet_connection_issue))
+
+      #FATEMEH RADMARD
+    
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          NOT(Fact(Bluetooth=W())))
+    def ask_if_connects_bluetooth(self):
+        Bluetooth = yesno_prompt("Does the computer connect to Bluetooth?")
+        self.declare(Fact(Bluetooth=Bluetooth))
+    
+
     @Rule(Fact(action='diagnose'),
           Fact(computer_turns_on=True),
           NOT(Fact(displays_output=W())))
@@ -231,6 +254,137 @@ class ComputerDiagnostic(KnowledgeEngine):
         print("3. Adjust the audio settings in the operating system.")
         print("4. Test with another set of speakers or headphones.")
         print("5. Check for any electromagnetic interference from other devices.")
+
+
+    #Fatemeh Moradi
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          Fact(Bluetooth=False))
+    def suggest_to_connect_Bluetooth(self):
+        print("There may be a problem with your Bluetooth driver installation, check it out.")
+
+
+#Mustafa Rahnamai
+# New rule for checking hardware conflicts
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          NOT(Fact(hardware_conflict=W())))
+    def ask_if_hardware_conflict(self):
+        hardware_conflict = yesno_prompt("Are there any hardware conflicts in the device manager?")
+        self.declare(Fact(hardware_conflict=hardware_conflict))
+
+    # New rule for suggesting resolution for hardware conflicts
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          Fact(hardware_conflict=True))
+    def suggest_hardware_conflict_resolution(self):
+        print("There might be a hardware conflict. Please try the following steps:")
+        print("1. Open the device manager and check for any devices with a yellow exclamation mark.")
+        print("2. Try updating the drivers for the conflicting hardware.")
+        print("3. If the issue persists, consider removing the device and restarting the computer.")
+
+    # New rule for checking peripheral issues
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          NOT(Fact(peripheral_issue=W())))
+    def ask_if_peripheral_issue(self):
+        peripheral_issue = yesno_prompt("Are you experiencing issues with any external devices (e.g., keyboard, mouse, printer)?")
+        self.declare(Fact(peripheral_issue=peripheral_issue))
+
+    # New rule for suggesting resolution for peripheral issues
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          Fact(peripheral_issue=True))
+    def suggest_peripheral_issue_resolution(self):
+        print("There might be a peripheral issue. Please try the following steps:")
+        print("1. Check the connections of your external devices.")
+        print("2. Try unplugging and replugging the devices.")
+        print("3. Update the drivers for the external devices.")
+        print("4. Try using the devices on another computer to rule out hardware failure.")
+
+    # New rule for checking system updates
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          NOT(Fact(system_update=W())))
+    def ask_if_system_update(self):
+        system_update = yesno_prompt("Is your operating system and all software up to date?")
+        self.declare(Fact(system_update=system_update))
+
+    # New rule for suggesting system update
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          Fact(system_update=False))
+    def suggest_system_update(self):
+        print("Your system might be out of date. Please ensure that you have the latest updates installed for your operating system and software.")
+
+    #Rules for random crash ,zahra_azadeh
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          Fact(dropout=W()))
+    def ask_if_dropout(self):
+        dropout = yesno_prompt("Does the image suddenly disappear?")
+        self.declare(Fact(dropout=dropout))
+    
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          Fact(dropout=True))
+    def suggest_random_crash(self):
+        print("There seems to be a random crash issue. Please try the following steps:")
+        print("1. Ensure that all hardware components are properly seated and not loose.")
+        print("2. Update device drivers and operating system.")
+        print("3. Check for malware and viruses.")
+        print("4. Monitor system temperature for overheating issues.")
+
+    #Seyed Mahdi Ashrafipour
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=False),
+          Fact(boots_up=False))
+    def suggest_graphics_card_issue(self):
+        print("The computer may have a graphics card issue. Please check the graphics card connections and try again.")
+    
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=False),
+          Fact(software_issue=False))
+    def suggest_os_corruption_issue(self):
+        print("The operating system might be corrupted. Please consider repairing or reinstalling the operating system.")
+
+
+    #Ariyan
+    @Rule(Fact(action='diagnose'),
+      Fact(computer_turns_on=True),
+      Fact(displays_output=False))
+    def suggest_display_issue(self):
+    print("The computer may have a display issue. Please check the monitor connections and the graphics card.")
+    
+    @Rule(Fact(action='diagnose'),
+      Fact(computer_turns_on=True),
+      Fact(displays_output=True),
+      Fact(boots_up=False),
+      Fact(software_issue=False),
+      Fact(hardware_issue=False))
+    def suggest_power_supply_issue(self):
+    print("The power supply might be faulty. Please check the power connections and consider replacing the power supply.")
 
 def yesno_prompt(question):
     while True:
