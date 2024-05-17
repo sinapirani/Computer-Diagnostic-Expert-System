@@ -329,6 +329,68 @@ class ComputerDiagnostic(KnowledgeEngine):
         print("4. Test with another set of speakers or headphones.")
         print("5. Check for any electromagnetic interference from other devices.")
 
+    # Rules for Application Crashes - Sarvenaz Jenabi
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          NOT(Fact(app_crashing=W())))
+    def ask_if_app_crashing(self):
+        app_crashing = yesno_prompt("Is any application crashing frequently?")
+        self.declare(Fact(app_crashing=app_crashing))
+
+    # Rules for Application Crashes - Sarvenaz Jenabi
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          Fact(app_crashing=True),
+          NOT(Fact(app_name=W())))
+    def ask_app_name(self):
+        app_name = input("What is the name of the application that is crashing? ")
+        self.declare(Fact(app_name=app_name))
+
+    # Rules for Application Crashes - Sarvenaz Jenabi
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          Fact(app_crashing=True),
+          Fact(app_name=MATCH.app_name),
+          NOT(Fact(app_error_message=W())))
+    def ask_app_error_message(self, app_name):
+        app_error_message = input(f"Is there an error message when {app_name} crashes? If yes, please describe it: ")
+        self.declare(Fact(app_error_message=app_error_message))
+
+    # Rules for Application Crashes - Sarvenaz Jenabi
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          Fact(app_crashing=True),
+          Fact(app_name=MATCH.app_name),
+          Fact(app_error_message=MATCH.app_error_message))
+    def suggest_app_crash_solution(self, app_name, app_error_message):
+        print(f"There seems to be an issue with {app_name} crashing. Please try the following steps:")
+        print("1. Check for updates for the application and install them.")
+        print("2. Ensure that your operating system and drivers are up to date.")
+        print("3. Try reinstalling the application.")
+        print("4. Check for any available patches or hotfixes for the application.")
+        print("5. Make sure your system meets the application's minimum requirements.")
+        print("6. Check if the error message provides any clues or specific error codes.")
+        if app_error_message:
+            print(f"Error Message: {app_error_message}")
+        print("7. Look up the error message or code online for specific solutions.")
+        print("8. If the issue persists, consider contacting the application's support team.")
+
+    # Rules for Application Crashes - Sarvenaz Jenabi
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          Fact(app_crashing=False))
+    def no_app_crashes_detected(self):
+        print("It seems there are no application crashes. Please ensure all your applications are up to date and running smoothly.")
 
     #Fatemeh Moradi
     @Rule(Fact(action='diagnose'),
