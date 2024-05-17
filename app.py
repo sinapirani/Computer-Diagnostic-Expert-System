@@ -31,18 +31,31 @@ class ComputerDiagnostic(KnowledgeEngine):
           Fact(computer_turns_on=True),
           Fact(displays_output=True),
           Fact(boots_up=True),
+          NOT(Fact(connection=W())))
+    def ask_if_connects(self):
+        connection = yesno_prompt("Does the computer connect to Wi-Fi?")
+        self.declare(Fact(connection=connection))
+
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          Fact(connection=True),
           NOT(Fact(software_issue=W())))
     def ask_if_software_issue(self):
-        software_issue = yesno_prompt("Are you experiencing any software-related issues (e.g., program crashes, freezes, errors)?")
+        software_issue = yesno_prompt(
+            "Are you experiencing any software-related issues (e.g., program crashes, freezes, errors)?")
         self.declare(Fact(software_issue=software_issue))
 
     @Rule(Fact(action='diagnose'),
           Fact(computer_turns_on=True),
           Fact(displays_output=True),
           Fact(boots_up=True),
+          Fact(connection=True),
           Fact(software_issue=False))
     def suggest_hardware_issue(self):
-        print("The computer seems to be working fine physically and software-wise. The issue might be hardware-related.")
+        print(
+            "The computer seems to be working fine physically and software-wise. The issue might be hardware-related.")
 
     @Rule(Fact(action='diagnose'),
           Fact(computer_turns_on=False))
@@ -60,12 +73,27 @@ class ComputerDiagnostic(KnowledgeEngine):
           Fact(displays_output=True),
           Fact(boots_up=False))
     def suggest_boot_issue(self):
-        print("The computer might have a boot issue. Please check if the boot device (e.g., hard drive, SSD) is properly connected and functioning.")
+        print(
+            "The computer might have a boot issue. Please check if the boot device (e.g., hard drive, "
+            "SSD) is properly connected and functioning.")
 
     @Rule(Fact(action='diagnose'),
           Fact(computer_turns_on=True),
           Fact(displays_output=True),
           Fact(boots_up=True),
+          Fact(connection=False))
+    def ask_if_connects_suggest(self):
+        print("Please try the following steps:")
+        print("1. Go to Control Panel")
+        print("2. Go to Network and Sharing center")
+        print("3. Go to Change adapter settings")
+        print("4. Disable the Wi-Fi and then Enable again")
+
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          Fact(connection=True),
           Fact(software_issue=True))
     def suggest_software_troubleshooting(self):
         print("The issue might be software-related. Please try the following steps:")
@@ -125,6 +153,7 @@ class ComputerDiagnostic(KnowledgeEngine):
         print("3. Listen carefully to identify the source of the noise.")
         print("4. If the noise persists, consider replacing the noisy component or seeking professional help.")
 
+
 def yesno_prompt(question):
     while True:
         response = input(question + " (yes/no): ").lower()
@@ -134,6 +163,7 @@ def yesno_prompt(question):
             return False
         else:
             print("Please enter 'yes' or 'no'.")
+
 
 engine = ComputerDiagnostic()
 engine.reset()
