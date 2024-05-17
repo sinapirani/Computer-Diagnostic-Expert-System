@@ -329,7 +329,75 @@ class ComputerDiagnostic(KnowledgeEngine):
         print("4. Test with another set of speakers or headphones.")
         print("5. Check for any electromagnetic interference from other devices.")
 
+    # Rules for High CPU Usage problems - Mehriyna Mohammadi
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          NOT(Fact(high_cpu_usage=W())))
+    def ask_if_high_cpu_usage(self):
+        high_cpu_usage = yesno_prompt("Is the computer experiencing high CPU usage?")
+        self.declare(Fact(high_cpu_usage=high_cpu_usage))
 
+    # Rules for High CPU Usage problems - Mehriyna Mohammadi
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          Fact(high_cpu_usage=True),
+          NOT(Fact(background_processes=W())))
+    def ask_if_background_processes(self):
+        background_processes = yesno_prompt("Are there many background processes running?")
+        self.declare(Fact(background_processes=background_processes))
+
+    # Rules for High CPU Usage problems - Mehriyna Mohammadi
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          Fact(high_cpu_usage=True),
+          Fact(background_processes=True))
+    def suggest_closing_background_processes(self):
+        print("There are many background processes running. Please try the following steps:")
+        print("1. Open Task Manager or Activity Monitor and identify unnecessary background processes.")
+        print("2. End or disable those processes to free up CPU resources.")
+        print("3. Disable startup programs that you do not need.")
+
+    # Rules for High CPU Usage problems - Mehriyna Mohammadi
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          Fact(high_cpu_usage=True),
+          NOT(Fact(malware_scan=W())))
+    def ask_if_malware_scan_done(self):
+        malware_scan = yesno_prompt("Have you performed a malware scan?")
+        self.declare(Fact(malware_scan=malware_scan))
+
+    # Rules for High CPU Usage problems - Mehriyna Mohammadi
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          Fact(high_cpu_usage=True),
+          Fact(malware_scan=False))
+    def suggest_running_malware_scan(self):
+        print("High CPU usage can be caused by malware. Please run a full system scan using a reliable antivirus software.")
+
+    # Rules for High CPU Usage problems - Mehriyna Mohammadi
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          Fact(high_cpu_usage=True),
+          Fact(malware_scan=True))
+    def suggest_other_high_cpu_solutions(self):
+        print("Please try the following additional steps to address high CPU usage:")
+        print("1. Update your operating system and all drivers.")
+        print("2. Check for software updates or patches that may resolve high CPU usage issues.")
+        print("3. Consider increasing system cooling if overheating is causing high CPU usage.")
+        print("4. Upgrade your CPU or add more RAM if your system is frequently under heavy load.")
+    
     #Fatemeh Moradi
     @Rule(Fact(action='diagnose'),
           Fact(computer_turns_on=True),
