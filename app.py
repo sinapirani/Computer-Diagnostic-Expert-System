@@ -1,4 +1,4 @@
-from experta import KnowledgeEngine, Fact, NOT, W, AND, OR, Rule, DefFacts, MATCH
+from experta import KnowledgeEngine, Fact, NOT, W, AND, OR, Rule, DefFacts
 
 class ComputerDiagnostic(KnowledgeEngine):
     @DefFacts()
@@ -74,6 +74,56 @@ class ComputerDiagnostic(KnowledgeEngine):
         print("3. Scan for viruses and malware.")
         print("4. Check for software conflicts or compatibility issues.")
         print("5. If the issue persists, consider reinstalling the operating system or seeking professional help.")
+        
+    # Amirhossein Ramezani Shahrestani
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          Fact(software_issue=False),
+          Fact(is_making_noise=False),
+          NOT(Fact(keyboard_issue=W())))
+    def ask_if_keyboard_issue(self):
+        keyboard_issue = yesno_prompt("Are you experiencing any issues with the keyboard?")
+        self.declare(Fact(keyboard_issue=keyboard_issue))
+
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          Fact(software_issue=False),
+          Fact(keyboard_issue=True))
+    def suggest_keyboard_troubleshooting(self):
+        print("The issue might be keyboard-related. Please try the following steps:")
+        print("1. Check if the keyboard is properly connected.")
+        print("2. Try using a different keyboard to see if the issue persists.")
+        print("3. Update or reinstall the keyboard drivers.")
+        print("4. Check for any software settings that might affect the keyboard functionality.")
+        print("5. If the issue persists, consider replacing the keyboard or seeking professional help.")
+
+        
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          Fact(software_issue=False),
+          NOT(Fact(is_making_noise=W())))
+    def ask_if_making_noise(self):
+        is_making_noise = yesno_prompt("Is the computer making any unusual noises?")
+        self.declare(Fact(is_making_noise=is_making_noise))
+
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          Fact(software_issue=False),
+          Fact(is_making_noise=True))
+    def suggest_hardware_issue_noise(self):
+        print("The computer is making unusual noises. This could indicate a hardware problem such as a failing hard drive or malfunctioning fan. Please try the following steps:")
+        print("1. Check if any cables or components are loose inside the computer.")
+        print("2. Ensure the fans are clean and not obstructed by dust or debris.")
+        print("3. Listen carefully to identify the source of the noise.")
+        print("4. If the noise persists, consider replacing the noisy component or seeking professional help.")
 
 def yesno_prompt(question):
     while True:
