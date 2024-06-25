@@ -581,6 +581,231 @@ class ComputerDiagnostic(KnowledgeEngine):
     def suggest_power_supply_issue(self):
         print("The power supply might be faulty. Please check the power connections and consider replacing the power supply.")
 
+    #Amir Mohammad Tafakory
+    #New Rule for Time and Date issue
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          NOT(Fact(time_date=W())))
+    def ask_if_time_and_date_incorrect(self):
+        time_date = yesno_prompt("Is your system time and date incorrect?")
+        self.declare(Fact(time_date=time_date))
+
+    #New Rule for suggesting set time and date system
+    @Rule(Fact(action='diagnose'),
+        Fact(computer_turns_on=True),
+        Fact(displays_output=True),
+        Fact(boots_up=True),
+        Fact(time_date=True))
+    def suggest_set_time_and_date(self):
+        print("Please try the following steps:")
+        print(" 1. go to control panel")
+        print(" 2. click on the clock and region")
+        print(" 3. click on the date and time")
+        print(" 4. click on the change time zone button")
+        print(" 5. select your time zone or check the option Automatically adjust clock for daylight saving time")
+
+    
+    # Shaghayegh_Atefrad 
+     
+    @Rule(Fact(action='diagnose'), 
+          Fact(computer_turns_on=True), 
+          NOT(Fact(ram_issue=W()))) 
+    def ask_if_ram_issue(self): 
+        ram_issue = yesno_prompt("Are you experiencing any RAM-related issues (e.g., system crashes, memory errors)?") 
+        self.declare(Fact(ram_issue=ram_issue)) 
+     
+    @Rule(Fact(action='diagnose'), 
+          Fact(action='diagnose'), 
+          Fact(computer_turns_on=True), 
+          NOT(Fact(cpu_issue=W()))) 
+    def ask_if_cpu_issue(self): 
+        cpu_issue = yesno_prompt("Are you experiencing any CPU-related issues (e.g., high temperatures, performance problems)?") 
+        self.declare(Fact(cpu_issue=cpu_issue)) 
+     
+    @Rule(Fact(action='diagnose'), 
+          Fact(computer_turns_on=True), 
+          NOT(Fact(graphics_card_issue=W()))) 
+    def ask_if_graphics_card_issue(self): 
+        graphics_card_issue = yesno_prompt("Are you experiencing any graphics card-related issues (e.g., display artifacts, low FPS)?") 
+        self.declare(Fact(graphics_card_issue=graphics_card_issue))
+
+    # Seyed_Daniel_Seyed_Saadat
+# new rule for troubleshoot RAM incompatibility issues.
+
+@Rule(Fact(action='diagnose'),
+      Fact(computer_turns_on=True),
+      Fact(displays_output=True),
+      Fact(boots_up=True),
+      Fact(software_issue=False),
+      NOT(Fact(ram_issue=W())))
+def ask_if_ram_issue(self):
+    ram_issue = yesno_prompt("Are you experiencing any issues related to RAM (e.g., frequent crashes, memory errors)?")
+    self.declare(Fact(ram_issue=ram_issue))
+
+@Rule(Fact(action="diagnose_hardware"),
+      Fact(ram_mismatch=True))
+def check_ram_compatibility(self):
+    print("There might be a RAM compatibility issue. Please check the following:")
+    print("- Make sure all RAM modules are of the same type (DDR3, DDR4, etc.).")
+    print("- Verify that the RAM modules have the same clock speed (e.g., 2400MHz).")
+    print("- Ensure that the RAM modules are installed in the correct slots (usually in pairs for dual-channel mode).")
+    print("- Check the motherboard manual for specific RAM compatibility information.")
+
+@Rule(Fact(action="diagnose_hardware"),
+      Fact(ram_mismatch=true),
+      Fact(ram_compatibility_checked=True))
+def recommend_ram_replacement(self):
+    print("If the RAM modules are compatible but the issue persists, consider replacing the RAM with compatible modules.")
+    print("Here are some additional troubleshooting tips:")
+    print("- Try reseating the RAM modules in their slots.")
+    print("- Test each RAM module individually to identify any faulty modules.")
+    print("- Update the BIOS to the latest version, which might improve RAM compatibility.")
+    print("If none of these suggestions resolve the issue, consult your motherboard manual or a computer technician for further assistance.")
+
+###Fatemeh Ahmadinejad
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          Fact(software_issue=False),
+          Fact(checked_ram=False))
+    def suggest_ram_issue(self):
+        print("try reseating or replacing the RAM modules to check for hardware problems.")
+    
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          Fact(software_issue=False),
+          Fact(checked_ram=True),
+          Fact(checked_cpu=False))
+    def suggest_cpu_issue(self):
+        print("If your computer is experiencing performance issues or random crashes, consider checking for CPU-related problems.")
+    
+    #New rule for overloading
+    @Rule(Fact)(action='diagnose'),
+    
+    Fact(computer_turns-on=True),
+      Fact(displays_output=True)
+      Fact(boots_up=True)
+      Fact(software_issues=True)
+      Not(Fact(overloading=w())))
+    
+    def ask_if_kill_task(self):
+        kill_task = yesno_prompt("are you suffering from your computer stopped working?")
+        self.declare(Fact(kill_task = kill_task))
+
+# Rule for BIOS update failures - Arian Setudeh
+@Rule(Fact(action='diagnose'),
+      Fact(computer_turns_on=True),
+      NOT(Fact(bios_update_failure=W())))
+def ask_if_bios_update_failure(self):
+    bios_update_failure = yesno_prompt("Have you recently attempted to update the BIOS and encountered issues?")
+    self.declare(Fact(bios_update_failure=bios_update_failure))
+
+
+# Rule for suggesting BIOS update resolution - Arian Setudeh
+@Rule(Fact(action='diagnose'),
+      Fact(computer_turns_on=True),
+      Fact(bios_update_failure=True))
+def suggest_bios_update_resolution(self):
+    print("There might be an issue with the BIOS update process. Please try the following steps:")
+    print("1. Ensure that the BIOS update file is compatible with your motherboard.")
+    print("2. Check the manufacturer's website for any specific instructions or troubleshooting steps.")
+    print("3. Retry the BIOS update process, ensuring that all instructions are followed carefully.")
+    print("4. If the issue persists, consider seeking assistance from the manufacturer's support team or forums.")
+
+
+    # Rule for BIOS settings reset - Arian Setudeh
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          NOT(Fact(bios_settings_reset=W())))
+    def ask_if_bios_settings_reset(self):
+        bios_settings_reset = yesno_prompt(
+            "Have you noticed any unexpected changes in BIOS settings or the BIOS being reset?")
+        self.declare(Fact(bios_settings_reset=bios_settings_reset))
+    
+    
+    # Rule for suggesting BIOS settings reset resolution - Arian Setudeh
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(bios_settings_reset=True))
+    def suggest_bios_settings_reset_resolution(self):
+        print("The BIOS settings may have been reset unexpectedly. Please try the following steps:")
+        print("1. Enter the BIOS setup utility and review the settings.")
+        print("2. Restore default settings if necessary, and ensure that changes are saved properly.")
+        print("3. Check for any hardware issues that may be causing the BIOS settings to reset.")
+        print("4. If the issue persists, consider updating the BIOS firmware or contacting technical support.")
+    
+    # Rule for firmware corruption - Arian Setudeh
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          NOT(Fact(firmware_corruption=W())))
+    def ask_if_firmware_corruption(self):
+        firmware_corruption = yesno_prompt("Have you encountered any signs of firmware corruption or failure?")
+        self.declare(Fact(firmware_corruption=firmware_corruption))
+    
+    # Rule for suggesting firmware corruption resolution - Arian Setudeh
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(firmware_corruption=True))
+    def suggest_firmware_corruption_resolution(self):
+        print("Firmware corruption may be causing issues with the system. Please try the following steps:")
+        print("1. Check for firmware updates for your motherboard, storage devices, or other hardware components.")
+        print("2. Attempt to reflash or reinstall the firmware for the affected devices.")
+        print("3. Ensure that the firmware update process is performed correctly and without interruptions.")
+        print("4. If the issue persists, consider contacting the manufacturer for further assistance.")
+
+
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          Fact(software_issue=False),
+          NOT(Fact(hardware_issue=W())))
+    def ask_if_hardware_issue(self):
+        hardware_issue = yesno_prompt("Are you experiencing any hardware-related issues (e.g., strange noises, overheating, hardware failures)?")
+        self.declare(Fact(hardware_issue=hardware_issue))
+    
+    @Rule(Fact(action='diagnose'),
+          Fact(computer_turns_on=True),
+          Fact(displays_output=True),
+          Fact(boots_up=True),
+          Fact(software_issue=False),
+          Fact(hardware_issue=True))
+    def suggest_hardware_troubleshooting(self):
+        print("The issue might be hardware-related. Please try the following steps:")
+        print("1. Check for loose or faulty hardware connections.")
+        print("2. Clean the computer from dust and ensure proper ventilation.")
+        print("3. Run hardware diagnostic tests to identify any faulty components.")
+        print("4. If necessary, replace or repair the faulty hardware.")
+
+    @Rule(Fact(action='diagnose'), Fact(computer_turns_on=True), Fact(displays_output=True), Fact(boots_up=True), NOT(Fact(sound_issue=W())))
+    def ask_if_sound_issue(self):
+        self.declare(Fact(sound_issue=yesno_prompt("Are you experiencing any sound issues?")))
+    
+    @Rule(Fact(action='diagnose'), Fact(computer_turns_on=True), Fact(displays_output=True), Fact(boots_up=True), Fact(sound_issue=True))
+    def suggest_sound_troubleshooting(self):
+        print("The issue might be sound-related. Please try the following steps:")
+        print("1. Check if the speakers or headphones are properly connected.")
+        print("2. Ensure the volume is not muted.")
+        print("3. Update or reinstall sound drivers.")
+        print("4. Check the sound settings in the operating system.")
+        print("5. Try with a different audio device to rule out hardware issues.")
+
+  @Rule(Fact(action='diagnose'), Fact(computer_turns_on=True), Fact(displays_output=True), Fact(boots_up=True), Fact(connection=True), Fact(software_issue=False), Fact(hardware_issue=False), NOT(Fact(driver_issue=W())))
+    def ask_if_driver_issue(self):
+        self.declare(Fact(driver_issue=yesno_prompt("Are you experiencing any driver issues?")))
+    
+    @Rule(Fact(action='diagnose'), Fact(computer_turns_on=True), Fact(displays_output=True), Fact(boots_up=True), Fact(connection=True), Fact(software_issue=False), Fact(hardware_issue=False), Fact(driver_issue=True))
+    def suggest_driver_troubleshooting(self):
+        print("The issue might be driver-related. Please try the following steps:")
+        print("1. Update the device drivers.")
+        print("2. Rollback to a previous driver version if the issue started after an update.")
+        print("3. Uninstall and reinstall the problematic driver.")
+        print("4. Check the manufacturer's website for driver updates or patches.")
 
 def yesno_prompt(question):
     while True:
