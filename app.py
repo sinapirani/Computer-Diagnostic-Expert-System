@@ -1,4 +1,4 @@
-from experta import KnowledgeEngine, Fact, NOT, W, AND, OR, Rule, DefFacts
+from experta import KnowledgeEngine, Fact, NOT, W, AND, OR, Rule, DefFacts, MATCH
 
 class ComputerDiagnostic(KnowledgeEngine):
     @DefFacts()
@@ -654,7 +654,7 @@ def check_ram_compatibility(self):
     print("- Check the motherboard manual for specific RAM compatibility information.")
 
 @Rule(Fact(action="diagnose_hardware"),
-      Fact(ram_mismatch=true),
+      Fact(ram_mismatch=True),
       Fact(ram_compatibility_checked=True))
 def recommend_ram_replacement(self):
     print("If the RAM modules are compatible but the issue persists, consider replacing the RAM with compatible modules.")
@@ -685,17 +685,15 @@ def recommend_ram_replacement(self):
         print("If your computer is experiencing performance issues or random crashes, consider checking for CPU-related problems.")
     
     #New rule for overloading
-    @Rule(Fact)(action='diagnose'),
-    
-    Fact(computer_turns-on=True),
-      Fact(displays_output=True)
-      Fact(boots_up=True)
-      Fact(software_issues=True)
-      Not(Fact(overloading=w())))
-    
+    @Rule(Fact(action='diagnose'),
+        Fact(computer_turns_on=True),
+        Fact(displays_output=True),
+        Fact(boots_up=True),
+        Fact(software_issues=True),
+        NOT(Fact(overloading=W())))    
     def ask_if_kill_task(self):
-        kill_task = yesno_prompt("are you suffering from your computer stopped working?")
-        self.declare(Fact(kill_task = kill_task))
+        kill_task = yesno_prompt("are you suffering from your computer stopped working?")
+        self.declare(Fact(kill_task = kill_task))
 
 # Rule for BIOS update failures - Arian Setudeh
 @Rule(Fact(action='diagnose'),
@@ -782,30 +780,30 @@ def suggest_bios_update_resolution(self):
         print("3. Run hardware diagnostic tests to identify any faulty components.")
         print("4. If necessary, replace or repair the faulty hardware.")
 
-    @Rule(Fact(action='diagnose'), Fact(computer_turns_on=True), Fact(displays_output=True), Fact(boots_up=True), NOT(Fact(sound_issue=W())))
-    def ask_if_sound_issue(self):
-        self.declare(Fact(sound_issue=yesno_prompt("Are you experiencing any sound issues?")))
-    
-    @Rule(Fact(action='diagnose'), Fact(computer_turns_on=True), Fact(displays_output=True), Fact(boots_up=True), Fact(sound_issue=True))
-    def suggest_sound_troubleshooting(self):
-        print("The issue might be sound-related. Please try the following steps:")
-        print("1. Check if the speakers or headphones are properly connected.")
-        print("2. Ensure the volume is not muted.")
-        print("3. Update or reinstall sound drivers.")
-        print("4. Check the sound settings in the operating system.")
-        print("5. Try with a different audio device to rule out hardware issues.")
+    @Rule(Fact(action='diagnose'), Fact(computer_turns_on=True), Fact(displays_output=True), Fact(boots_up=True), NOT(Fact(sound_issue=W())))
+    def ask_if_sound_issue(self):
+        self.declare(Fact(sound_issue=yesno_prompt("Are you experiencing any sound issues?")))
 
-  @Rule(Fact(action='diagnose'), Fact(computer_turns_on=True), Fact(displays_output=True), Fact(boots_up=True), Fact(connection=True), Fact(software_issue=False), Fact(hardware_issue=False), NOT(Fact(driver_issue=W())))
-    def ask_if_driver_issue(self):
-        self.declare(Fact(driver_issue=yesno_prompt("Are you experiencing any driver issues?")))
-    
-    @Rule(Fact(action='diagnose'), Fact(computer_turns_on=True), Fact(displays_output=True), Fact(boots_up=True), Fact(connection=True), Fact(software_issue=False), Fact(hardware_issue=False), Fact(driver_issue=True))
-    def suggest_driver_troubleshooting(self):
-        print("The issue might be driver-related. Please try the following steps:")
-        print("1. Update the device drivers.")
-        print("2. Rollback to a previous driver version if the issue started after an update.")
-        print("3. Uninstall and reinstall the problematic driver.")
-        print("4. Check the manufacturer's website for driver updates or patches.")
+    @Rule(Fact(action='diagnose'), Fact(computer_turns_on=True), Fact(displays_output=True), Fact(boots_up=True), Fact(sound_issue=True))
+    def suggest_sound_troubleshooting(self):
+        print("The issue might be sound-related. Please try the following steps:")
+        print("1. Check if the speakers or headphones are properly connected.")
+        print("2. Ensure the volume is not muted.")
+        print("3. Update or reinstall sound drivers.")
+        print("4. Check the sound settings in the operating system.")
+        print("5. Try with a different audio device to rule out hardware issues.")
+
+    @Rule(Fact(action='diagnose'), Fact(computer_turns_on=True), Fact(displays_output=True), Fact(boots_up=True), Fact(connection=True), Fact(software_issue=False), Fact(hardware_issue=False), NOT(Fact(driver_issue=W())))
+    def ask_if_driver_issue(self):
+        self.declare(Fact(driver_issue=yesno_prompt("Are you experiencing any driver issues?")))
+    
+    @Rule(Fact(action='diagnose'), Fact(computer_turns_on=True), Fact(displays_output=True), Fact(boots_up=True), Fact(connection=True), Fact(software_issue=False), Fact(hardware_issue=False), Fact(driver_issue=True))
+    def suggest_driver_troubleshooting(self):
+        print("The issue might be driver-related. Please try the following steps:")
+        print("1. Update the device drivers.")
+        print("2. Rollback to a previous driver version if the issue started after an update.")
+        print("3. Uninstall and reinstall the problematic driver.")
+        print("4. Check the manufacturer's website for driver updates or patches.")
 
 def yesno_prompt(question):
     while True:
